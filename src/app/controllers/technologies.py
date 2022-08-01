@@ -6,7 +6,11 @@ technology = Blueprint('technology', __name__, url_prefix="/technology")
 @technology.route('/', methods = ["GET"])
 def list_all_technologies():
 
-  techs = read()
+  techs = read('technologies')
+
+  if techs == None or len(techs) == 0:
+    return jsonify({"error": "A lista de tecnologias está vazia"}), 400
+  
   return jsonify(techs), 200
 
 @technology.route('/', methods = ["POST"])
@@ -18,33 +22,32 @@ def add_new_technology():
   if 'error' in data:
     return jsonify(data), 400
   
-  techs = read()
+  techs = read('technologies')
 
   if techs == None or len(techs) == 0:
-    save([data])
+    save([data], 'technologies')
     return jsonify(data), 201
 
   if exist_value(data, techs):
     return jsonify({"error": "Algum dos items que foi enviado, já existe no banco de dados"}), 400
 
   techs.append(data)
-  save(techs)
+  save(techs, 'technologies')
 
   return jsonify(techs), 201
 
 @technology.route('/<int:id>', methods = ["DELETE"])
 def delete_technology(id):
 
-  techs = read()
-
+  techs = read('technologies')
   if techs == None or len(techs) == 0:
-    return {"error": f"id {id} não foi encontrado"}, 404
-
+      return {"error": "Não tem nenhuma tecnologia para deletar"}, 400
+  
   for index, data in enumerate(techs):
     if data['id'] == id:
       techs.pop(index)
-      save(techs)
+      save(techs, 'technologies')
 
-      return jsonify({"message": f"O id {id} foi deletado com sucesso"}), 200
-    
-  return jsonify({"error": f"id {id} não foi encontrado"}), 404
+      return jsonify({"message": "Item deletado com sucesso."}), 200
+
+  return jsonify({"error": f"Não foi encontrado o id {id}"})
