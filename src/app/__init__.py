@@ -17,6 +17,6 @@ def create_app():
   MA.init_app(app)
   Migrate(app=app, db=DB, directory='./src/app/migrations')
 
-  from src.app.models import technology, developer, country, state, city, user, developer_technology
+  from src.app.models import technology, developer, country, state, city, user
 
   return app

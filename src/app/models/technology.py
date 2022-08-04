@@ -8,7 +8,18 @@ class Technology(DB.Model):
 
   def __init__(self, name):
     self.name = name
-  
+
+  @classmethod
+  def seed(cls, name):
+    tech = Technology(
+      name = name
+    )
+    tech.save()
+
+  def save(self): 
+    DB.session.add(self)
+    DB.session.commit()
+
 class TechnologySchema(MA.Schema):
   class Meta:
     fields = ('id', 'name')

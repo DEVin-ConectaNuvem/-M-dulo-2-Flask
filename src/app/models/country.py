@@ -10,6 +10,18 @@ class Country(DB.Model):
     self.name = name
     self.language = language
 
+  @classmethod
+  def seed(cls, name, language):
+    country = Country(
+      name = name,
+      language = language
+    )
+    country.save()
+
+  def save(self): 
+    DB.session.add(self)
+    DB.session.commit()
+
 class CountrySchema(MA.Schema):
   class Meta:
     fields = ('id', 'name', 'language')
