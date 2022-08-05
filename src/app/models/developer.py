@@ -1,5 +1,6 @@
 from src.app import DB, MA
 from src.app.models.user import User
+from src.app.models.technology import TechnologySchema
 
 developer_technologies = DB.Table('developer_technologies',
                     DB.Column('developer_id', DB.Integer, DB.ForeignKey('developers.id')),
@@ -33,6 +34,7 @@ class Developer(DB.Model):
     DB.session.commit()
 
 class DeveloperSchema(MA.Schema):
+  technologies = MA.Nested(TechnologySchema, many=True)
   class Meta:
     fields = ('id', 'months_experience', 'accepted_remote_work', 'user_id', 'technologies')
 
