@@ -10,7 +10,17 @@ class City(DB.Model):
   def __init__(self, state_id, name):
     self.state_id = state_id
     self.name = name
-
+    
+  @classmethod
+  def seed(cls, state_id, name):
+    city = City(
+      state_id = state_id,
+      name = name
+    )
+    city.save()
+  def save(self):
+    DB.session.add(self)
+    DB.session.commit()
 class CitySchema(MA.Schema):
   class Meta:
     fields = ('id', 'state_id', 'name')

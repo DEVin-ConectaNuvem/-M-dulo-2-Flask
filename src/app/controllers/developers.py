@@ -1,13 +1,14 @@
 from flask import Blueprint, request, jsonify
 from src.app.utils import exist_key
 from src.app.db import read, save
+from src.app.services.developer_service import list_all_developers_service
 developers = Blueprint('developers', __name__, url_prefix="/developer")
 
 @developers.route('/', methods = ["GET"])
 def list_all_developers():
+  list_developers = list_all_developers_service()
 
-
-  return {"data": ["Fulano", "Cicláno"]}
+  return jsonify(list_developers)
 
 @developers.route('/', methods = ["POST"])
 def add_new_developer():
