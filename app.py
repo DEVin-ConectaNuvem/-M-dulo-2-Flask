@@ -5,6 +5,8 @@ import click
 from src.app.db import populate_db
 from src.app import DB
 
+from src.app.db import populate_db
+from src.app import DB
 app = create_app()
 routes(app)
 

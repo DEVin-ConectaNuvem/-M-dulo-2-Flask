@@ -22,14 +22,14 @@ def read(db_name):
   except:
     return None
 
-def populate_db(): 
-  country = Country.query.first() # Query para verificar se existe dados salvos
+def populate_db():
+
+  country = Country.query.first()
+
   if country != None:
     print('Já existe dados populados.')
     return
-
   brasil_code = 76
-  #Requisições para pegar dados de país, estado e cidade respectivamente
   countries_data = requests.get(f"https://servicodados.ibge.gov.br/api/v1/localidades/paises/{brasil_code}")
   states_data = requests.get("https://servicodados.ibge.gov.br/api/v1/localidades/estados")
   cities_data = requests.get("https://servicodados.ibge.gov.br/api/v1/localidades/municipios")
@@ -47,12 +47,12 @@ def populate_db():
       stateObject['sigla']
     )
 
-  state = State.query.order_by(State.name.asc()).all() # Query para ordenar de forma ascendente 
+  state = State.query.order_by(State.name.asc()).all()
   state_dict = states_share_schema.dump(state)
 
-  for city_object in cities_data.json(): # for para salvar dados da cidade
+  for city_object in cities_data.json():
     state_id = 0
-    for state_object in state_dict:# for para identificar em qual estado a cidade pertence
+    for state_object in state_dict:
       if state_object['initials'] == city_object['microrregiao']['mesorregiao']['UF']['sigla']:
         state_id = state_object['id']
     City.seed(
@@ -60,18 +60,20 @@ def populate_db():
       city_object['nome']
     )
 
-  cities = City.query.order_by(City.name.asc()).all()# Query para ordenar de forma ascendente
+  cities = City.query.order_by(City.name.asc()).all()
   cities_dict = cities_share_schema.dump(cities)
+
   users = requests.get('https://randomuser.me/api?nat=br&results=100')
   techs = requests.get('https://lit-citadel-12163.herokuapp.com/technologies/get_all_technologies')
-  for tech_object in techs.json(): # for para salvar a lista de tecnologias
+  
+  for tech_object in techs.json():
     Technology.seed(
       tech_object['name']
     )
-    
-  for user in users.json()['results']: # for criado para salvar lista de usuários
-    city_id = 2 #inicialmente setado com 2, pois nem sempre é encontrado um valor definido
-    for city_object in cities_dict: # for criado identificar a cidade do usuário
+
+  for user in users.json()['results']:
+    city_id = 2
+    for city_object in cities_dict:
       if user['location']['city'] == city_object['name']:
         city_id = city_object['id']
     User.seed(

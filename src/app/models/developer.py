@@ -18,8 +18,6 @@ class Developer(DB.Model):
     self.accepted_remote_work = accepted_remote_work
     self.user_id = user_id
     self.technologies = technologies
-
-#Dentro da classe Developer, iremos adicionar esse bloco  
   @classmethod
   def seed(cls, months_experience, accepted_remote_work, user_id, technologies):
     developer = Developer(
