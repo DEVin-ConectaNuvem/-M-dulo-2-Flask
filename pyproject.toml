@@ -14,8 +14,9 @@ flask-marshmallow = "^0.14.0"
 marshmallow-sqlalchemy = "^0.28.1"
 Flask-Migrate = "^3.1.0"
 flasgger = "^0.9.5"
-requests = "^2.28.1"
 bcrypt = "^3.2.2"
+requests = "^2.28.1"
+PyJWT = "^2.4.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"

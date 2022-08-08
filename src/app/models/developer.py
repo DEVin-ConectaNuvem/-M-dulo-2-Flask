@@ -1,5 +1,5 @@
 from src.app import DB, MA
-from src.app.models.user import User
+from src.app.models.user import User, user_share_schema
 from src.app.models.technology import TechnologySchema
 
 developer_technologies = DB.Table('developer_technologies',
@@ -13,6 +13,8 @@ class Developer(DB.Model):
   accepted_remote_work = DB.Column(DB.Boolean, nullable = False, default = True)
   user_id = DB.Column(DB.Integer, DB.ForeignKey(User.id), nullable = False)
   technologies = DB.relationship('Technology', secondary=developer_technologies, backref='developers')
+  user = DB.relationship("User", foreign_keys=[user_id])
+
   def __init__(self, months_experience, accepted_remote_work, user_id, technologies):
     self.months_experience = months_experience
     self.accepted_remote_work = accepted_remote_work
@@ -33,8 +35,9 @@ class Developer(DB.Model):
 
 class DeveloperSchema(MA.Schema):
   technologies = MA.Nested(TechnologySchema, many=True)
+  user = MA.Nested(user_share_schema)
   class Meta:
-    fields = ('id', 'months_experience', 'accepted_remote_work', 'user_id', 'technologies')
+    fields = ('id', 'months_experience', 'accepted_remote_work', 'user_id', 'technologies', 'user')
 
 developer_share_schema = DeveloperSchema()
 developers_share_schema = DeveloperSchema(many = True)

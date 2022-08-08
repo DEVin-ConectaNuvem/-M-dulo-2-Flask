@@ -5,6 +5,7 @@ from src.app.services.developer_service import list_all_developers_service
 developers = Blueprint('developers', __name__, url_prefix="/developer")
 
 @developers.route('/', methods = ["GET"])
+
 def list_all_developers():
   list_developers = list_all_developers_service()
 
