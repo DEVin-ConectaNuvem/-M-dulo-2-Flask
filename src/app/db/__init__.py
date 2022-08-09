@@ -7,6 +7,8 @@ from src.app.models.state import State, states_share_schema
 from src.app.models.country import Country, country_share_schema
 from src.app.models.user import User, users_share_schema
 from src.app.models.technology import Technology
+from src.app.models.role import Role
+from src.app.models.permission import Permission
 
 def save(data, db_name): 
     json_object = json.dumps(data, indent=4)
@@ -65,12 +67,41 @@ def populate_db():
 
   users = requests.get('https://randomuser.me/api?nat=br&results=100')
   techs = requests.get('https://lit-citadel-12163.herokuapp.com/technologies/get_all_technologies')
-  
+
+  permissions = ['DELETE', 'READ', 'WRITE', 'UPDATE']
+  roles = ['OWNER', 'HELPER']
+
+  for permission in permissions:
+    Permission.seed(
+      permission
+    )
+    
+  permissions_helper = Permission.query.filter(
+    Permission.description.in_([
+      'READ', 'WRITE'
+    ])
+  ).all()
+
+  permissions_owner = Permission.query.all()
+
+  for index, role in enumerate(roles):
+    if index == 0:
+      Role.seed(
+        role,
+        permissions_owner
+      )
+    else:
+      Role.seed(
+        role,
+        permissions_helper
+      )
+
   for tech_object in techs.json():
     Technology.seed(
       tech_object['name']
     )
 
+  roles_query = Role.query.filter_by(description = "HELPER").all()
   for user in users.json()['results']:
     city_id = 2
     for city_object in cities_dict:
@@ -81,7 +112,8 @@ def populate_db():
       user['name']['first'] + ' ' + user['name']['last'],
       user['registered']['age'],
       user['email'],
-      user['login']['password']
+      user['login']['password'],
+      roles_query
     )
 
   users = User.query.order_by(User.name.asc()).all()
