@@ -2,16 +2,20 @@ from flask import Blueprint, request, jsonify
 from src.app.utils import exist_key
 from src.app.db import read, save
 from src.app.services.developer_service import list_all_developers_service
+from src.app.middlewares.auth import requires_access_level
+
 developers = Blueprint('developers', __name__, url_prefix="/developer")
 
 @developers.route('/', methods = ["GET"])
+@requires_access_level("READ")
+def list_all_developers(current_user):
 
-def list_all_developers():
   list_developers = list_all_developers_service()
 
   return jsonify(list_developers)
 
 @developers.route('/', methods = ["POST"])
+@requires_access_level("WRITE")
 def add_new_developer():
   list_keys = ['name', 'techs', 'xp', 'skills']
 

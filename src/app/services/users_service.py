@@ -7,8 +7,11 @@ from src.app.models.role import Role
 from src.app.models.user import User, user_share_schema
 
 
-def create_user(city_id, name, age, email, password, roles = "HELPER"):
+def create_user(city_id, name, age, email, password, roles):
   try:
+    if roles == None:
+      roles = "HELPER"
+
     roles_query = Role.query.filter_by(description = roles).all()
 
     User.seed(
