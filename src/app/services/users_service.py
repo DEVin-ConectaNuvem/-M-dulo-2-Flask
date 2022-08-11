@@ -1,6 +1,5 @@
 from datetime import datetime, timedelta
-from jwt import encode
-from flask import current_app
+from src.app.utils import generate_jwt
 
 from src.app.models.user import User
 from src.app.models.role import Role
@@ -41,9 +40,17 @@ def login_user(email, password):
       "roles": user_dict["roles"]
     }
 
-    token = encode(payload, current_app.config["SECRET_KEY"], "HS256")
+    token = generate_jwt(payload)
 
     return { "token": token }
 
+  except:
+    return { "error": "Algo deu errado!", "status_code": 500 }
+
+def get_user_by_email(email):
+  try:
+    user_query = User.query.filter_by(email = email).first_or_404()
+    user_dict = user_share_schema.dump(user_query)
+    return { "id": user_dict['id'], "roles": user_dict["roles"] }
   except:
     return { "error": "Algo deu errado!", "status_code": 500 }

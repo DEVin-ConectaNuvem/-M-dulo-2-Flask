@@ -1,3 +1,6 @@
+from flask import current_app
+from jwt import encode
+
 def exist_key(request_json, list_keys):
   keys_not_have_in_request = []
 
@@ -20,3 +23,8 @@ def exist_value(request_json, data_in_db):
       return True
 
   return False
+
+def generate_jwt(payload):
+    token = encode(payload, current_app.config["SECRET_KEY"], "HS256")
+
+    return token
