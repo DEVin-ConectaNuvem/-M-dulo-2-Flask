@@ -21,7 +21,10 @@ def create_user(city_id, name, age, email, password, roles):
       password, 
       roles_query
     )
+    exist_user = get_user_by_email(email)
 
+    if exist_user:
+      return exist_user
     return {"message": "Usuário foi criado com sucesso."}
   except:
     return {"error": "Algo deu errado!"}
